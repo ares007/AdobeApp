@@ -43,6 +43,10 @@
     <Compile Include="JavaScriptCollection.cs" />
     <Compile Include="FunctionCall.cs" />
     <Compile Include="ScriptDir.cs" />
+    <Compile Include="Invocation.cs" />
+    <Compile Include="ExceptionHandling.cs" />
+    <Compile Include="InvocationException.cs" />
+    <Compile Include="ICallable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -39,6 +39,7 @@
     <Compile Include="AppleScriptRunnerTest.cs" />
     <Compile Include="JavaScriptCollectionTest.cs" />
     <Compile Include="ScriptDirTest.cs" />
+    <Compile Include="InvocationTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
