@@ -49,6 +49,10 @@ namespace AdobeApp
             return this;
         }
 
+        // TODO: Ändern auf Action<JavaScriptFunctionCall>
+        // JavaScriptFunctionCall speichert nur FunctionName und Args
+        // Aufruf erfolgt hier mit dem AppleScriptRunner
+
         TResult Run<TResult>(Func<JavaScriptFunctionCall, JavaScriptResponse> functionCall)
                 where TResult: class 
         {
