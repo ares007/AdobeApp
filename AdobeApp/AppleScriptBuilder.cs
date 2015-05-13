@@ -64,26 +64,16 @@ namespace AdobeApp
             return this;
         }
 
-        public AppleScriptBuilder RunJavaScriptFile(string file, string args) 
+        public AppleScriptBuilder RunJavaScriptFile(string file, params string[] args) 
         {
-            if (isInDesign)
-            {
-                headCalls.Add(
-                    String.Format(
-                        "do script (POSIX file \"{0}\") language javascript with arguments {1} undo mode fast entire script", 
-                        file, args
-                    )
-                );
-            }
-            else
-            {
-                headCalls.Add(
-                    String.Format(
-                        "do javascript \"$.evalFile('{0}')\" with arguments {1}",
-                        file, args
-                    )
-                );
-            } 
+            string format = isInDesign
+                ? "do script (POSIX file \"{0}\") language javascript with arguments {{ {1} }} undo mode fast entire script"
+                : "do javascript \"$.evalFile('{0}')\" with arguments {{ {1} }}";
+
+            headCalls.Add(
+                String.Format(format, file, String.Join(", ", args))
+            );
+
             return this;
         }
         #endregion

@@ -32,6 +32,12 @@
     <Reference Include="ProcessRunner">
       <HintPath>..\packages\ProcessRunner.1.0.8\lib\net40\ProcessRunner.dll</HintPath>
     </Reference>
+    <Reference Include="Common.Logging.Core">
+      <HintPath>..\packages\Common.Logging.Core.3.1.0\lib\net40\Common.Logging.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging">
+      <HintPath>..\packages\Common.Logging.3.1.0\lib\net40\Common.Logging.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MyClass.cs" />
@@ -47,10 +53,18 @@
     <Compile Include="ExceptionHandling.cs" />
     <Compile Include="InvocationException.cs" />
     <Compile Include="ICallable.cs" />
+    <Compile Include="Application.cs" />
+    <Compile Include="JavaScriptFunctionCall.cs" />
+    <Compile Include="JavaScriptResponse.cs" />
+    <Compile Include="JavaScriptExceptionInfo.cs" />
+    <Compile Include="LogLine.cs" />
+    <Compile Include="LogSeverity.cs" />
+    <Compile Include="JavaScriptException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="JavaScript\adobe_test.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="JavaScript\" />
