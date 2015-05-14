@@ -137,10 +137,10 @@ namespace AdobeApp
 
             Log.Debug(m => m("Result: {0}", JsonConvert.SerializeObject(response.Result, Formatting.None)));
 
-            return response.Result as TResult;
-//            return JsonConvert.DeserializeObject<TResult>(
-//                JsonConvert.SerializeObject(response.Result)
-//            );
+            // poor man's conversion from object to TResult
+            return JsonConvert.DeserializeObject<TResult>(
+                JsonConvert.SerializeObject(response.Result)
+            );
         }
 
         /// <summary>
