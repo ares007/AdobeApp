@@ -3,6 +3,9 @@ using System.Dynamic;
 
 namespace AdobeApp
 {
+    /// <summary>
+    /// allow calling a javaScript function via a dynamic object
+    /// </summary>
     public class JavaScriptFunctionCall : DynamicObject
     {
         public string FunctionName { get; private set; }

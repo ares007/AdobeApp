@@ -2,6 +2,7 @@
 using Common.Logging;
 using Common.Logging.Simple;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -10,7 +11,6 @@ namespace AdobeApp.Starter
 {
     class MainClass
     {
-        private static ILog Log;
         private static JavaScriptCollection javaScripts = new JavaScriptCollection();
 
         public static void Main(string[] args)
@@ -18,32 +18,37 @@ namespace AdobeApp.Starter
             var options = new CommandLineOptions();
             if (CommandLine.Parser.Default.ParseArguments(args, options))
             {
-                if (options.Debug)
-                {
-                    LogManager.Adapter = new ConsoleOutLoggerFactoryAdapter();
-                    Log = LogManager.GetLogger<MainClass>();
-                }
+                ExecuteCommand(options);
+            }
+        }
 
-                if (options.ListJavaScriptResources)
-                    ListJavaScriptResources();
-                else if (options.ShowJavaScriptResource)
-                    ShowJavaScriptResource(options.JavaScript);
-                else if (!String.IsNullOrEmpty(options.FunctionName))
-                {
-                    if (options.Run)
-                        RunJavaScrtiptFunction(options.JavaScript, options.FunctionName, options.Args);
-                    else
-                        ExecuteJavaScrtiptFunction(options.JavaScript, options.FunctionName, options.Args);
-                }
-            }
-            else
+        static void ExecuteCommand(CommandLineOptions options)
+        {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            if (options.Debug)
+                LogManager.Adapter = new ConsoleOutLoggerFactoryAdapter();
+
+
+            if (options.ListJavaScriptResources)
+                ListJavaScriptResources();
+            else if (options.ShowJavaScriptResource)
+                ShowJavaScriptResource(options.JavaScript);
+            else if (!String.IsNullOrEmpty(options.FunctionName))
             {
-                Console.WriteLine("Something went wrong: {0}",
-                    String.Join(
-                        "/",
-                        options.LastParserState.Errors
-                        .Select(e => e.BadOption.ShortName + ": " + e.ViolatesRequired)));
+                if (options.Run)
+                    RunJavaScrtiptFunction(options.JavaScript, options.FunctionName, options.Args);
+                else
+                    ExecuteJavaScrtiptFunction(options.JavaScript, options.FunctionName, options.Args);
             }
+            else if (options.Run)
+            {
+                Console.WriteLine("Please specify a JavaScript file to run!");
+            }
+
+            if (options.MeasureTime)
+                Console.WriteLine("Elapsed Time: {0}ms", stopWatch.ElapsedMilliseconds);
         }
 
         static void ListJavaScriptResources()

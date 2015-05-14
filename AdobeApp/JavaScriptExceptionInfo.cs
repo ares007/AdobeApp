@@ -2,6 +2,9 @@ using System;
 
 namespace AdobeApp
 {
+    /// <summary>
+    /// collect information about a JavaScript exception
+    /// </summary>
 	public class JavaScriptExceptionInfo
 	{
         public string Name { get; set; }

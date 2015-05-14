@@ -18,6 +18,9 @@ namespace AdobeApp.Starter
         [Option('s', "show", DefaultValue = false, HelpText = "show content of a JavaScript resource")]
         public bool ShowJavaScriptResource { get; set; }
 
+        [Option('m', "measure", DefaultValue = false, HelpText = "measure execution time")]
+        public bool MeasureTime { get; set; }
+
         [Option('r', "run", DefaultValue = false, HelpText = "run (high level) instead of execute (low level)")]
         public bool Run { get; set; }
 

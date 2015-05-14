@@ -49,12 +49,7 @@
     <Compile Include="AppleScriptException.cs" />
     <Compile Include="AppleScriptRunner.cs" />
     <Compile Include="JavaScriptCollection.cs" />
-    <Compile Include="FunctionCall.cs" />
     <Compile Include="ScriptDir.cs" />
-    <Compile Include="Invocation.cs" />
-    <Compile Include="ExceptionHandling.cs" />
-    <Compile Include="InvocationException.cs" />
-    <Compile Include="ICallable.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="JavaScriptFunctionCall.cs" />
     <Compile Include="JavaScriptResponse.cs" />
