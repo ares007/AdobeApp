@@ -67,30 +67,38 @@ namespace AdobeApp
             return Execute(functionName, jsonArgs);
         }
 
-        public string Execute(string functionName, string args)
+        public string Execute(string functionName, string jsonArgs)
         {
             Log.Debug(m => m("Start Exectute {0}", functionName));
 
+            using (var scriptDir = BuildScriptDir())
+            {
+                var appleScript = BuildAppleScript(scriptDir, functionName, jsonArgs);
+
+                return AppleScriptRunner.Run(appleScript);
+            }
+        }
+
+        private ScriptDir BuildScriptDir()
+        {
             var javaScripts = new JavaScriptCollection();
 
             var scriptDir = new ScriptDir();
             scriptDir.Populate(javaScripts);
 
-            var appleScript = 
+            return scriptDir;
+        }
+
+        private AppleScriptBuilder BuildAppleScript(ScriptDir scriptDir, string functionName, string jsonArgs)
+        {
+            return
                 new AppleScriptBuilder()
                     .Tell(AppName)
                     .Timeout(AppleScriptTimeout)
                     .Assign("functionName", functionName)
-                    .Assign("scriptArgs", args)
+                    .Assign("scriptArgs", jsonArgs)
                     .Assign("scriptLogger", "array")
                     .RunJavaScriptFile(scriptDir.Script(JavaScriptFilename), "functionName", "scriptArgs", "scriptLogger");
-
-            // Console.WriteLine(appleScript.ToString());
-
-            var response = AppleScriptRunner.RunScript(appleScript.ToString());
-            //Log.Debug(m => m("End Execute {0}, response: {1}...", functionName, response.Remove(60)));
-
-            return response;
         }
         #endregion
 

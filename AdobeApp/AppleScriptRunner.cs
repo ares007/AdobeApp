@@ -23,7 +23,7 @@ namespace AdobeApp
         /// </summary>
         /// <returns>result of the script</returns>
         /// <param name="script">AppleScript source</param>
-        public static string RunScript(string script)
+        public static string Run(string script)
         {
             var options = new ProcessOptions(OSASCRIPT, "-");
             options.StandardInputEncoding = Encoding.GetEncoding("macintosh");
@@ -48,9 +48,9 @@ namespace AdobeApp
         /// </summary>
         /// <returns>result of the script</returns>
         /// <param name="builder">an AppleScriptBuilder instance</param>
-        public static string RunScript(AppleScriptBuilder builder)
+        public static string Run(AppleScriptBuilder builder)
         {
-            return RunScript(builder.ToString());
+            return Run(builder.ToString());
         }
     }
 }
