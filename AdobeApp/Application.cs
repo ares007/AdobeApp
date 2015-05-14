@@ -33,21 +33,55 @@ namespace AdobeApp
             AppleScriptTimeout = timeout;
         }
 
-        public static Application Name(string name) {
+        public static Application Name(string name)
+        {
             return new Application(name);
         }
 
-        public Application Timeout(int timeout) {
+        public Application Timeout(int timeout)
+        {
             AppleScriptTimeout = timeout;
 
             return this;
         }
 
-        public Application JavaScript(string name) {
+        public Application JavaScript(string name)
+        {
             JavaScriptFilename = name;
 
             return this;
         }
+
+        #region Low Level Execution
+        public string Execute(string functionName, object args)
+        {
+            // TODO: convert args to JSON string
+            throw new NotImplementedException();
+        }
+
+        public string Execute(string functionName, string args)
+        {
+            var javaScripts = new JavaScriptCollection();
+
+            var scriptDir = new ScriptDir();
+            scriptDir.Populate(javaScripts);
+
+            var appleScript = 
+                new AppleScriptBuilder()
+                    .Tell(AppName)
+                    .Timeout(AppleScriptTimeout)
+                    .Assign("functionName", functionName)
+                    .Assign("scriptArgs", args)
+                    .Assign("scriptLogger", "array")
+                    .RunJavaScriptFile(scriptDir.Script(JavaScriptFilename), "functionName", "scriptArgs", "scriptLogger");
+
+            // Console.WriteLine(appleScript.ToString());
+
+            return AppleScriptRunner.RunScript(appleScript.ToString());
+        }
+        #endregion
+
+        #region High level Run
 
         // TODO: Ändern auf Action<JavaScriptFunctionCall>
         // JavaScriptFunctionCall speichert nur FunctionName und Args
@@ -72,7 +106,8 @@ namespace AdobeApp
             return response.Result as TResult;
         }
 
-        private void WriteLogLine(LogLine logLine) {
+        private void WriteLogLine(LogLine logLine)
+        {
             switch (logLine.Severity)
             {
                 case LogSeverity.Debug:
@@ -92,11 +127,6 @@ namespace AdobeApp
                     break;
             }
         }
-
-//        public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
-//        {
-//            // return base.TryInvokeMember(binder, args, out result);
-//
-//        }
+        #endregion
     }
 }

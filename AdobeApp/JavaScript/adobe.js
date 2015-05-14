@@ -62,10 +62,10 @@ var log = {};
     }
     
     function invoke(functionName, args) {
-        var f = f(functionName);
-        if (!f)
-            throw Error('Function "' + functionName + '" does not exist, stopping.');
-        return f.call(this, args);
+        var func = f(functionName);
+        if (!func)
+            throw new Error('Function "' + functionName + '" does not exist, stopping.');
+        return func.call(this, args);
     }
     
     function tryInvokeIfExists(functionName, args) {
@@ -93,7 +93,6 @@ var log = {};
     	var logLine = function() {};
 
     	if (logOptions === 'array') {
-    		response.log = [];
     		logLine = function(severity, message) {
     			response.log.push({ severity: severity, message: message });
     	    }
@@ -113,14 +112,14 @@ var log = {};
     	exception: undefined
     };
 
-    initializeLogger(logOptions);
+    initializeLogger(logOptions, response);
 
    	log.info('starting');
     try {
         tryInvokeIfExists('autoInit');
 
         log.debug('invoke "' + functionName + '"');
-        var args = eval('(' + jsonArgs + ')');
+        var args = null; //eval('(' + jsonArgs + ')');
         var result = invoke(functionName, args);
 
         tryInvokeIfExists('autoExit');

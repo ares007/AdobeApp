@@ -57,9 +57,19 @@ namespace AdobeApp
             return this;
         }
 
-        public AppleScriptBuilder Assign(string variableName, string content)
+        public AppleScriptBuilder Assign(string variableName, int content)
         {
             headCalls.Add(String.Format("set {0} to {1}", variableName, content));
+
+            return this;
+        }
+
+        public AppleScriptBuilder Assign(string variableName, string content)
+        {
+            // FIXME: falls längerer Text: Chunks
+            // FIXME: falls einfacher Text: literaler String
+
+            headCalls.Add(String.Format("set {0} to {1}", variableName, AppleScriptStringEncoder.ToUtxt(content)));
 
             return this;
         }

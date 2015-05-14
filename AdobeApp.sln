@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeApp", "AdobeApp\AdobeA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeApp.Tests", "AdobeApp.Tests\AdobeApp.Tests.csproj", "{4D151D34-5655-47D4-A5BC-813EF8205F10}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeApp.Starter", "AdobeApp.Starter\AdobeApp.Starter.csproj", "{F9AA5492-6F2B-46B1-B0FF-D765EB941CA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,5 +21,9 @@ Global
 		{901DA1EF-6162-44E0-AD1F-DFA9D34DB14F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{901DA1EF-6162-44E0-AD1F-DFA9D34DB14F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{901DA1EF-6162-44E0-AD1F-DFA9D34DB14F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9AA5492-6F2B-46B1-B0FF-D765EB941CA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9AA5492-6F2B-46B1-B0FF-D765EB941CA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9AA5492-6F2B-46B1-B0FF-D765EB941CA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9AA5492-6F2B-46B1-B0FF-D765EB941CA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
