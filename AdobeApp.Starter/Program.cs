@@ -3,12 +3,14 @@ using Common.Logging;
 using Common.Logging.Simple;
 using System;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace AdobeApp.Starter
 {
     class MainClass
     {
-        private static ILog Log; // = LogManager.GetLogger<MainClass>();
+        private static ILog Log;
         private static JavaScriptCollection javaScripts = new JavaScriptCollection();
 
         public static void Main(string[] args)
@@ -27,7 +29,12 @@ namespace AdobeApp.Starter
                 else if (options.ShowJavaScriptResource)
                     ShowJavaScriptResource(options.JavaScript);
                 else if (!String.IsNullOrEmpty(options.FunctionName))
-                    ExecuteJavaScrtiptFunction(options.JavaScript, options.FunctionName, options.Args);
+                {
+                    if (options.Run)
+                        RunJavaScrtiptFunction(options.JavaScript, options.FunctionName, options.Args);
+                    else
+                        ExecuteJavaScrtiptFunction(options.JavaScript, options.FunctionName, options.Args);
+                }
             }
             else
             {
@@ -54,12 +61,26 @@ namespace AdobeApp.Starter
 
         static void ExecuteJavaScrtiptFunction(string javaScript, string functionName, string args)
         {
-            Log.Info("starting");
-
             var app = new Application("Adobe InDesign CC 2014");
             app.JavaScript(javaScript);
 
             Console.WriteLine(app.Execute(functionName, args));
+        }
+
+        static void RunJavaScrtiptFunction(string javaScript, string functionName, string jsonArgs)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            };
+
+            var args = JsonConvert.DeserializeObject(jsonArgs, settings);
+
+            var app = new Application("Adobe InDesign CC 2014");
+            app.JavaScript(javaScript);
+
+            var result = app.Run(functionName, args);
+            Console.WriteLine("Result: {0}", result);
         }
     }
 }

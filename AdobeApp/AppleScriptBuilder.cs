@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AdobeApp
 {
@@ -57,6 +58,7 @@ namespace AdobeApp
             return this;
         }
 
+        // TODO: add more overloads (eg. float, boolean)
         public AppleScriptBuilder Assign(string variableName, int content)
         {
             headCalls.Add(String.Format("set {0} to {1}", variableName, content));
@@ -67,9 +69,30 @@ namespace AdobeApp
         public AppleScriptBuilder Assign(string variableName, string content)
         {
             // FIXME: falls längerer Text: Chunks
-            // FIXME: falls einfacher Text: literaler String
+            if (new Regex("\\A[0-~]*\\z").IsMatch(content) && content.Length < 60)
+            {
+                headCalls.Add(String.Format("set {0} to \"{1}\"", variableName, content));
+            }
+            else if (content.Length < 40)
+            {
+                headCalls.Add(String.Format("set {0} to {1}", variableName, AppleScriptStringEncoder.ToUtxt(content)));
+            }
+            else
+            {
+                var chunks = AppleScriptStringEncoder.SplitIntoChunks(content, 40);
+                var isFirst = true;
+                var extra = "";
 
-            headCalls.Add(String.Format("set {0} to {1}", variableName, AppleScriptStringEncoder.ToUtxt(content)));
+                foreach (var chunk in chunks)
+                {
+                    headCalls.Add(String.Format("set {0} to {1}{2}", variableName, extra, chunk));
+                    if (isFirst) {
+                        extra = variableName + " & ";
+                        isFirst = false;
+                    }
+                }
+            }    
+
 
             return this;
         }

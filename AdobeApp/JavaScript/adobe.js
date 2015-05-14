@@ -114,12 +114,12 @@ var log = {};
 
     initializeLogger(logOptions, response);
 
-   	log.info('starting');
+   	log.info('JavaScript starting');
     try {
         tryInvokeIfExists('autoInit');
 
         log.debug('invoke "' + functionName + '"');
-        var args = null; //eval('(' + jsonArgs + ')');
+        var args = eval('(' + jsonArgs + ')');
         var result = invoke(functionName, args);
 
         tryInvokeIfExists('autoExit');
@@ -137,7 +137,7 @@ var log = {};
     }
 
     // must return a string which travels thru AppleScript
-    log.info('done');
+    log.info('JavaScript done');
     return toJson(response);
 })(
     arguments[0] || 'main', // function to call

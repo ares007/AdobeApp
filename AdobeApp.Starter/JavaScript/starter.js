@@ -5,5 +5,9 @@
 #include "adobe.js"
 
 function main(args) {
-	return "main";
+	return { end: "main", value: 42, arg: args };
+}
+
+function croak(args) {
+    throw new Error("croak died intentionally");
 }

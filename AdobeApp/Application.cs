@@ -1,5 +1,7 @@
-﻿using System;
-using Common.Logging;
+﻿using Common.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System;
 
 namespace AdobeApp
 {
@@ -19,6 +21,8 @@ namespace AdobeApp
         private const int DEFAULT_TIMEOUT = 1800;
         private ILog Log = LogManager.GetLogger<Application>();
 
+        private JsonSerializerSettings settings;
+
         public string AppName { get; private set; }
         public int AppleScriptTimeout { get; private set; }
         public string JavaScriptFilename { get; private set; }
@@ -31,6 +35,10 @@ namespace AdobeApp
         {
             AppName = name;
             AppleScriptTimeout = timeout;
+            settings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            };
         }
 
         public static Application Name(string name)
@@ -55,12 +63,14 @@ namespace AdobeApp
         #region Low Level Execution
         public string Execute(string functionName, object args)
         {
-            // TODO: convert args to JSON string
-            throw new NotImplementedException();
+            var jsonArgs = JsonConvert.SerializeObject(args, Formatting.None, settings);
+            return Execute(functionName, jsonArgs);
         }
 
         public string Execute(string functionName, string args)
         {
+            Log.Debug(m => m("Start Exectute {0}", functionName));
+
             var javaScripts = new JavaScriptCollection();
 
             var scriptDir = new ScriptDir();
@@ -77,33 +87,69 @@ namespace AdobeApp
 
             // Console.WriteLine(appleScript.ToString());
 
-            return AppleScriptRunner.RunScript(appleScript.ToString());
+            var response = AppleScriptRunner.RunScript(appleScript.ToString());
+            //Log.Debug(m => m("End Execute {0}, response: {1}...", functionName, response.Remove(60)));
+
+            return response;
         }
         #endregion
 
         #region High level Run
-
-        // TODO: Ändern auf Action<JavaScriptFunctionCall>
-        // JavaScriptFunctionCall speichert nur FunctionName und Args
-        // Aufruf erfolgt hier mit dem AppleScriptRunner
-
-        TResult Run<TResult>(Func<JavaScriptFunctionCall, JavaScriptResponse> functionCall)
-                where TResult: class 
+        /// <summary>
+        /// runs a given javaScript function with an argument
+        /// </summary>
+        /// <returns>
+        /// an object constructed from the JSON result
+        /// </returns>
+        /// <param name="functionName">Function name.</param>
+        /// <param name="arg">Argument.</param>
+        public object Run(string functionName, object arg)
         {
-            // eigentlich nicht.
-            // JavaSCriptCollection zum Suchen nach dem JavaScript
-            // AppleScriptBuilder notwendig zum bauen 
-            //      -- functionName erst bei JavaScriptFunctionCall bekannt
-            // AppleScriptRunner zum starten des ganzen
-            // JSON deserialisierung zu TResult
+            return Run<object>(functionName, arg);
+        }
 
-            var response = functionCall(new JavaScriptFunctionCall());
+        /// <summary>
+        /// runs a given javaScript function with an argument
+        /// </summary>
+        /// <returns>
+        /// an object of the requested type built from the JSON result
+        /// </returns>
+        /// <param name="functionName">Function name.</param>
+        /// <param name="arg">Argument.</param>
+        /// <typeparam name="TResult">The type of the result to generate</typeparam>
+        public TResult Run<TResult>(string functionName, object arg)
+            where TResult: class
+        {
+            var responseText = Execute(functionName, arg);
+            var response = JsonConvert.DeserializeObject<JavaScriptResponse>(responseText, settings);
+
             response.Log.ForEach(WriteLogLine);
             if (!response.Success)
                 throw new JavaScriptException(response.Exception.ToString());
 
-            // FIXME: wrong - must be converted to TResult
+            Log.Debug(m => m("Result: {0}", JsonConvert.SerializeObject(response.Result, Formatting.None)));
+
             return response.Result as TResult;
+//            return JsonConvert.DeserializeObject<TResult>(
+//                JsonConvert.SerializeObject(response.Result)
+//            );
+        }
+
+        /// <summary>
+        /// runs a given javaScript function with an argument
+        /// </summary>
+        /// <returns>
+        /// an object of the requested type built from the JSON result
+        /// </returns>
+        /// <param name="functionCall">a simulated call with an arg</param>
+        /// <typeparam name="TResult">The type of the result to generate</typeparam>
+        public TResult Run<TResult>(Action<JavaScriptFunctionCall> functionCall)
+                where TResult: class 
+        {
+            var javaScriptCall = new JavaScriptFunctionCall();
+            functionCall(new JavaScriptFunctionCall());
+
+            return Run<TResult>(javaScriptCall.FunctionName, javaScriptCall.Arg);
         }
 
         private void WriteLogLine(LogLine logLine)

@@ -6,18 +6,15 @@ namespace AdobeApp
     public class JavaScriptFunctionCall : DynamicObject
     {
         public string FunctionName { get; private set; }
-
-        public JavaScriptFunctionCall()
-        {
-        }
+        public object Arg { get; private set; }
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
             FunctionName = binder.Name;
+            Arg = args.Length >= 1 ? args[0] : null;
 
-            // TODO: call function. result is string. Convert to JavaScriptResponse
-
-            result = "hello"; // satisfy compiler
+            // satisfy compiler -- we do not need a result
+            result = null;
 
             return true;
         }

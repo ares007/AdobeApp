@@ -45,7 +45,7 @@ namespace AdobeApp
                     ? text.Length - i
                     : chunkSize;
 
-                yield return text.Substring(i, length);
+                yield return ToUtxt(text.Substring(i, length));
             }
         }
     }

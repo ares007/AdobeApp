@@ -18,17 +18,17 @@ namespace AdobeApp.Starter
         [Option('s', "show", DefaultValue = false, HelpText = "show content of a JavaScript resource")]
         public bool ShowJavaScriptResource { get; set; }
 
+        [Option('r', "run", DefaultValue = false, HelpText = "run (high level) instead of execute (low level)")]
+        public bool Run { get; set; }
+
         [Option('j', "javascript", HelpText = "JavaScript to show or execute")]
         public string JavaScript { get; set; }
 
-        [Option('f', "function", HelpText = "JavaScript function to execute")]
+        [Option('f', "function", HelpText = "JavaScript function to execute or run")]
         public string FunctionName { get; set; }
 
         [Option('a', "args", HelpText = "Arguments for function (JSON)")]
         public string Args { get; set; }
-
-//        [Option('d', "directory", Required = true, HelpText = "directory to list")]
-//        public string Directory { get; set; }
 
         [ParserState]
         public IParserState LastParserState { get; set; }
