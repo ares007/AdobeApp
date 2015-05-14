@@ -68,12 +68,11 @@ namespace AdobeApp
 
         public AppleScriptBuilder Assign(string variableName, string content)
         {
-            // FIXME: falls längerer Text: Chunks
-            if (new Regex("\\A[0-~]*\\z").IsMatch(content) && content.Length < 60)
+            if (NoEscapeNeeded(content) && content.Length < 60)
             {
                 headCalls.Add(String.Format("set {0} to \"{1}\"", variableName, content));
             }
-            else if (content.Length < 40)
+            else if (content.Length <= 40)
             {
                 headCalls.Add(String.Format("set {0} to {1}", variableName, AppleScriptStringEncoder.ToUtxt(content)));
             }
@@ -93,8 +92,12 @@ namespace AdobeApp
                 }
             }    
 
-
             return this;
+        }
+
+        private bool NoEscapeNeeded(string text)
+        {
+            return new Regex("\\A[0-~]*\\z").IsMatch(text);
         }
 
         public AppleScriptBuilder RunJavaScriptFile(string file, params string[] args) 
