@@ -1,7 +1,8 @@
 ﻿using System;
-using TwoPS.Processes;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace AdobeApp
 {
@@ -25,22 +26,50 @@ namespace AdobeApp
         /// <param name="script">AppleScript source</param>
         public static string Run(string script)
         {
-            var options = new ProcessOptions(OSASCRIPT, "-");
-            options.StandardInputEncoding = Encoding.GetEncoding("macintosh");
-            // stdout is UTF8, because we pass-thru JavaScript's output
+            var startInfo = new ProcessStartInfo
+                {
+                    FileName = OSASCRIPT,
+                    Arguments = "-",
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                };
 
-            var process = new Process(options);
-            var task = Task.Run(() => process.Run());
-            process.StandardInput.Write(script);
-            process.StandardInput.Close();
-            var result = task.Result;
+            var process = new Process();
+            process.StartInfo = startInfo;
+            process.Start();
 
-            if (result.ExitCode != 0)
+            var stdInWriter = new StreamWriter(process.StandardInput.BaseStream, Encoding.GetEncoding("macintosh"));
+            var stdInTask = stdInWriter.WriteAsync(script)
+                .ContinueWith(t => stdInWriter.Close());
+
+            var stdOutTask = process.StandardOutput.ReadToEndAsync();
+            var stdErrTask = process.StandardError.ReadToEndAsync();
+
+            process.WaitForExit();
+            Task.WaitAll(stdInTask, stdOutTask, stdErrTask);
+
+            // Console.WriteLine("exit code = {0}, result = {1}", process.ExitCode, stdOutTask.Result);
+
+            if (process.ExitCode != 0)
             {
-                throw new AppleScriptException(result.StandardError);
+                throw new AppleScriptException(stdErrTask.Result);
             }
 
-            return result.StandardOutput;
+            try 
+            {
+                process.Dispose(); 
+            }
+            #pragma warning disable 0168
+            catch (ObjectDisposedException e) 
+            #pragma warning restore 0168
+            {
+                // ObjectDisposedException thrown
+                // because StandardInput is already closed
+            }
+
+            return stdOutTask.Result;
         }
 
         /// <summary>
