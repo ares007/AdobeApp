@@ -8,7 +8,9 @@ namespace AdobeApp.Tests
     public class JavaScriptFunctionCallTest
     {
         JavaScriptFunctionCall functionCall;
+        #pragma warning disable 0414
         dynamic js;
+        #pragma warning restore 0414
 
         [SetUp]
         public void SetUp()
