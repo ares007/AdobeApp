@@ -14,7 +14,8 @@ namespace AdobeApp
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
             FunctionName = binder.Name;
-            Arg = args.Length >= 1 ? args[0] : null;
+            if (args.Length > 0)
+                Arg = args[0];
 
             // satisfy compiler -- we do not need a result
             result = null;
@@ -23,4 +24,3 @@ namespace AdobeApp
         }
     }
 }
-

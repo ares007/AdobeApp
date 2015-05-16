@@ -14,7 +14,7 @@ namespace AdobeApp.Tests
             var result = AppleScriptRunner.Run("return 42");
 
             // Assert
-            Assert.AreEqual("42", result);
+            Assert.AreEqual("42\n", result);
         }
     }
 }

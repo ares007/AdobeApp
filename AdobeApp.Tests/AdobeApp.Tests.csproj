@@ -32,6 +32,7 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppleScriptStringEncoderTest.cs" />
@@ -39,6 +40,8 @@
     <Compile Include="AppleScriptRunnerTest.cs" />
     <Compile Include="JavaScriptCollectionTest.cs" />
     <Compile Include="ScriptDirTest.cs" />
+    <Compile Include="ApplicationTest.cs" />
+    <Compile Include="JavaScriptFunctionCallTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

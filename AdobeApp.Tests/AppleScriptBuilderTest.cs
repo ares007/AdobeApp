@@ -52,12 +52,41 @@ namespace AdobeApp.Tests
             );
         }
 
-
         [Test]
-        public void TellAssign_Both_CreateStatementInsideBlock()
+        public void TellAssignString_Both_CreateStatementInsideBlock()
         {
             // Act
-            appleScript.Tell("Xxx").Assign("result", "42");
+            appleScript.Tell("Xxx").Assign("result", "xx");
+
+            // Assert
+            Assert.AreEqual(
+                "tell application \"Xxx\"\n" + 
+                "set result to \"xx\"\n" +
+                "end tell\n", 
+                appleScript.ToString()
+            );
+        }
+
+        [Test]
+        public void TellAssignSpecialString_Both_CreateStatementInsideBlock()
+        {
+            // Act
+            appleScript.Tell("Xxx").Assign("result", "\"");
+
+            // Assert
+            Assert.AreEqual(
+                "tell application \"Xxx\"\n" + 
+                "set result to «data utxt0022» as Unicode text\n" +
+                "end tell\n", 
+                appleScript.ToString()
+            );
+        }
+
+        [Test]
+        public void TellAssignInt_Both_CreateStatementInsideBlock()
+        {
+            // Act
+            appleScript.Tell("Xxx").Assign("result", 42);
 
             // Assert
             Assert.AreEqual(
